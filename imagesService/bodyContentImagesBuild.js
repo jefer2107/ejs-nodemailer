@@ -1,4 +1,4 @@
-const bufferCompiler = require('./bufferCompiler')
+const bufferBuild = require('./bufferBuild')
 
 const bodyContentImagesBuild = async (images)=>{
     if(!images || images == [])  throw Error('image data not informed.')
@@ -14,7 +14,7 @@ const bodyContentImagesBuild = async (images)=>{
             })
 
         }else{
-            const fileItem = await bufferCompiler(x.filePath).then((buffer)=>{
+            const fileItem = await bufferBuild(x.filePath).then((buffer)=>{
                  return {
                     filename: x.filename,
                     content: buffer,
