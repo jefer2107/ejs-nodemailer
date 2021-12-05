@@ -1,4 +1,6 @@
-
+const nodemailer = require('nodemailer')
+const createMailOptionsData = require('./createMailOptionsData')
+const erro = require('./errors')
 
 const send = ({configData,mailData})=>{
     erro(configData,mailData).emailFormat(mailData.to)

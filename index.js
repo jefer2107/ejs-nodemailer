@@ -1,5 +1,7 @@
 const sendMail = require("./emailService")
+const bodyContentImagesBuild = require("./imagesService/bodyContentImagesBuild")
 const ejsCompiler = require('./ejsCompiler')
+const erro = require('./errors')
 
 const ejsSendMail = (configData)=>{
     if(!configData)throw Error('Config data not configured')
