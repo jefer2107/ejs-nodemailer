@@ -1,4 +1,5 @@
-
+const sendMail = require("./emailService")
+const ejsCompiler = require('./ejsCompiler')
 
 const ejsSendMail = (configData)=>{
     if(!configData)throw Error('Config data not configured')
@@ -8,6 +9,7 @@ const ejsSendMail = (configData)=>{
             data: null
         }
         
+        erro(configData,mailData)
 
         let bodyContent
 
