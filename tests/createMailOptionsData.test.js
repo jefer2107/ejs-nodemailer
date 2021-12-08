@@ -133,26 +133,28 @@ describe('createMailOptionsData',()=>{
         const mailOptions = createMailOptionsData(data)
 
         const {images} = data.body.bodyContent
-        const imagesMailOptions = mailOptions.attachments
-        const imagesFilter = images.map((x)=>{
+        const imagesMailOptions = mailOptions.attachments.map((x)=>{
             if(x.filename){
                 return x.filename
             }
         })
-        const imagesMailOptionsFilter = imagesMailOptions.map((x)=>{
+        const imagesFilter = images.map((x)=>{
             if(x.filename){
                 return x.filename
             }
         })
 
         const imagesStringiFy = JSON.stringify(imagesFilter)
-        const imagesMailOptionsFilterStringiFy = JSON.stringify(imagesMailOptionsFilter)
+        const imagesMailOptionsStringiFy = JSON.stringify(imagesMailOptions)
 
         const imagesLength = images.length
         const imagesMailOptionsLength = imagesMailOptions.length
 
+        console.log('imagesMailOptionsStringiFy: ',imagesMailOptionsStringiFy)
+        console.log('imagesStringiFy: ',imagesStringiFy)
+
         assert.equal(imagesLength,imagesMailOptionsLength)
-        assert.equal(imagesStringiFy,imagesMailOptionsFilterStringiFy)
+        assert.equal(imagesStringiFy,imagesMailOptionsStringiFy)
 
     })
 

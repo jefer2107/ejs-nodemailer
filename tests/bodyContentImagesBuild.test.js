@@ -33,18 +33,15 @@ describe('bodyContentImagesBuild',()=>{
         const {images} = sendMailData.body
 
         const newFileImages = await bodyContentImagesBuild(images)
-        const newFileImagesFilter = newFileImages.map((x)=>{
-            if(x.filename){
-                return x.filename
-            }
-        })
-        const imagesFilter = images.map(x=>{
-            if(x.filename){
-                return x.filename
-            }
-        })
+        const newFileImagesFilter = newFileImages.map((x)=>{if(x.filename) return x.filename})
+         
+        const imagesFilter = images.map(x=>{if(x.filename) return x.filename})
+
         const newFileImagesStringiFy = JSON.stringify(newFileImagesFilter)
         const imagesStringiFy = JSON.stringify(imagesFilter)
+
+        console.log('newFileImagesStringiFy: ',newFileImagesStringiFy)
+        console.log('imagesStringiFy: ',imagesStringiFy)
 
         assert.isTrue(images != null || images != undefined)
         assert.equal(newFileImagesStringiFy,imagesStringiFy)
