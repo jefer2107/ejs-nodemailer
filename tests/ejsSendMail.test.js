@@ -2,6 +2,7 @@ const { assert } = require("chai")
 const sendMail = require("../emailService")
 const ejsSendMail = require('../index')
 const sinon = require('sinon')
+const bodyContentImagesBuild = require("../imagesService/bodyContentImagesBuild")
 
 describe('ejsSendMail Test',()=>{
     describe('send',()=>{
@@ -33,10 +34,10 @@ describe('ejsSendMail Test',()=>{
             assert.isTrue(sendMailData.to != null || sendMailData.to !== undefined)
         })
 
-        it('Bodycontent should be the same as content passed by mailData with bodyType text',async()=>{
+        let sendMailServiceStub;
 
             const sendMailData = {
-                to: 'sdfffsdf@fdsf.com',
+                to: 'dsfsdf@dsfsdf.com',
                 from: 'sdfsdf@fdsf.com',
                 subject: 'assunto xxx',
                 body: {
@@ -46,7 +47,7 @@ describe('ejsSendMail Test',()=>{
                 
             }
 
-            const configData = {
+            const data = {
                 smtp:{
                     host: 'smtp.gmail.com',
                     user: 'aaaa',
@@ -55,186 +56,249 @@ describe('ejsSendMail Test',()=>{
                 }  
             }
 
-            const sendMail = await ejsSendMail(configData).send(sendMailData)
+            before(()=>{
+                sendMailServiceStub = sinon.stub(sendMail,'send')
+            })
 
-            const {data} = sendMail
+            beforeEach(()=>{
+                sendMailServiceStub.reset()
+            })
 
-            assert.equal(sendMailData.body.content,data.body.bodyContent)
+            after(()=>{
+                sendMailServiceStub.restore()
+            })
+
+        it('Bodycontent should be the same as content passed by mailData with bodyType text',async()=>{
+
+            ejsSendMail(data).send(sendMailData)
+
+            const args = sendMailServiceStub.args
+
+            const mailData = args[0][0].mailData
+
+            assert.equal(sendMailData.body.content,mailData.body.bodyContent)
         })
 
         it('Bodycontent must be the same as content passed by mailData with bodyType html',async()=>{
 
-            const sendMailData = {
-                to: 'dsfsdf@dsfsdf.com',
-                from: 'sdfsdf@fdsf.com',
-                subject: 'assunto xxx',
-                body: {
+            const newSendMailDataHtml = {
+                ...sendMailData,
+                body:{
                     bodyType: 'html',
-                    content: 'html html xxx'                    
+                    content: 'html html xxx'
                 }
-                
             }
 
-            const configData = {
-                smtp:{
-                    host: 'smtp.gmail.com',
-                    user: 'aaaa',
-                    password: '123',
-                    secure: true
-                }  
-            }
+            ejsSendMail(data).send(newSendMailDataHtml)
 
-            const sendMail = await ejsSendMail(configData).send(sendMailData)
+            const args = sendMailServiceStub.args
 
-            const {data} = sendMail
+            const mailData = args[0][0].mailData
 
-            assert.equal(sendMailData.body.content,data.body.bodyContent.content)
+            assert.equal(newSendMailDataHtml.body.content,mailData.body.bodyContent.content)
+
+            
         })
 
-        it('Bodycontent should be the same as content passed by mailData with bodyType ejs',async()=>{
+        it('Bodycontent must be the same as content passed by mailData with bodyType html',async()=>{
 
-            const sendMailData = {
-                to: 'dsfsdf@dsfsdf.com',
-                from: 'sdfsdf@fdsf.com',
-                subject: 'assunto xxx',
-                body: {
+            const newSendMailDataEjs = {
+                ...sendMailData,
+                body:{
                     bodyType: 'ejs',
-                    content: 'ejs ejs xxx'                    
+                    content: 'ejs ejs xxx'
                 }
-                
             }
 
-            const configData = {
-                smtp:{
-                    host: 'smtp.gmail.com',
-                    user: 'aaaa',
-                    password: '123',
-                    secure: true
-                }  
-            }
+            ejsSendMail(data).send(newSendMailDataEjs)
 
-            const sendMail = await ejsSendMail(configData).send(sendMailData)
+            const args = sendMailServiceStub.args
 
-            const {data} = sendMail
+            const mailData = args[0][0].mailData
 
-            assert.equal(sendMailData.body.content,data.body.bodyContent.content)
-        })
+            assert.equal(newSendMailDataEjs.body.content,mailData.body.bodyContent.content)
 
-
-        it('should be return error if pass value empty in smtp config',()=>{
-
-            try {
-                ejsSendMail()
-            } catch (e) {
-                assert.equal(e.message, 'Config data not configured')
-            }
             
         })
 
-        it('should be return error if pass value empty in mail mailData',async()=>{
-            const configData = {
-                smtp:{
-                    host: 'smtp.gmail.com',
-                    user: 'aaaa',
-                    password: '123',
-                    secure: true
-                }  
-            }
+            //let bodyContentImagesBuildStub;
 
 
-            
+            // before(()=>{
+            //     bodyContentImagesBuildStub = sinon.stub(bodyContentImagesBuild,'bodyContentImagesBuild')
+            // })
 
-            ejsSendMail(configData).send().then((x)=>{
-                return x
+            // beforeEach(()=>{
+            //     bodyContentImagesBuildStub.reset()
+            // })
 
-            }).catch((e)=>{
-                console.log('message ejsSendMail test: ',e.message)
-                assert.equal(e.message,'hhhhhhhh')
-            })
+            // after(()=>{
+            //     bodyContentImagesBuildStub.restore()
+            // })
 
-        })
-
-        it('should be return error if pass value empty of the mailData.from',async()=>{
-
-            const configData = {
-                smtp:{
-                    host: 'smtp.gmail.com',
-                    user: 'aaaa',
-                    password: '123',
-                    secure: true
-                }  
-            }
-
-            const sendMailData = {
-                to: 'dsfsdf@dsfsdf.com',
-                from: 'dddddddddddddd',
-                subject: 'assunto xxx',
-                body: {
-                    bodyType: 'text',
-                    content: 'texto texto xxx'                    
+            const sendMailDataImages = {
+                ...sendMailData,
+                body:{
+                    bodyType: 'ejs',
+                    content: 'ejs ejs xxx',
+                    images: [
+                        {
+                            filename: 'imageTest 1',
+                            buffer: 'buffer test 1'
+                        },
+                        {
+                            filename: 'imageTest 2',
+                            buffer: 'buffer test 2'
+                        },
+                        {
+                            filename: 'html 2',
+                            filePath:'images/html5.png',
+                            cid: 'html'
+                        }
+                    ]      
                 }
-                
             }
 
-            ejsSendMail(configData).send(sendMailData).then((x)=>{
-                return x
+        it('Bodycontent should be return correctly with bodyType ejs or html with images',async()=>{
 
-            }).catch((e)=>{
+            let bodyContentImagesBuildStub;
+
+            let imagesResult
+
+            bodyContentImagesBuildStub = sinon.stub(bodyContentImagesBuild)
+
+            ejsSendMail(data).send(sendMailDataImages)
+
+            await bodyContentImagesBuild(sendMailDataImages.body.images)
+
+            //console.log('bodyContentImagesBuild: ',imagesResult)
+
+            // const args = await sendMailServiceStub.args
+
+            // const mailData = args[0][0].mailData
+
+            // console.log('images: ',images)
+
+            // console.log('mailData: ',mailData)
+
+        })
+
+
+        // it('should be return error if pass value empty in smtp config',()=>{
+
+        //     try {
+        //         ejsSendMail()
+        //     } catch (e) {
+        //         assert.equal(e.message, 'SMTP config not configured. Please, configure calling config funtion.')
+        //     }
+            
+        // })
+
+        // it('should be return error if pass value empty in mail mailData',async()=>{
+        //     const configData = {
+        //         smtp:{
+        //             host: 'smtp.gmail.com',
+        //             user: 'aaaa',
+        //             password: '123',
+        //             secure: true
+        //         }  
+        //     }
+
+        //     ejsSendMail(configData).send().then((x)=>{
+        //         return x
+
+        //     }).catch((e)=>{
+        //         console.log('message ejsSendMail test: ',e.message)
+        //         assert.equal(e.message,'hhhhhhhh')
+        //     })
+
+        // })
+
+        // it('should be return error if pass value empty of the mailData.from',async()=>{
+
+        //     const configData = {
+        //         smtp:{
+        //             host: 'smtp.gmail.com',
+        //             user: 'aaaa',
+        //             password: '123',
+        //             secure: true
+        //         }  
+        //     }
+
+        //     const sendMailData = {
+        //         to: 'dsfsdf@dsfsdf.com',
+        //         from: 'dddddddddddddd',
+        //         subject: 'assunto xxx',
+        //         body: {
+        //             bodyType: 'text',
+        //             content: 'texto texto xxx'                    
+        //         }
                 
-                console.log('message ejsSendMail test: ',e.message)
-                assert.equal(e.message,'hhhhhhhh')
-            })
-        })
+        //     }
 
-        let sendMailServiceStub
+        //     ejsSendMail(configData).send(sendMailData).then((x)=>{
+        //         return x
 
-        const sendMailData = {
-            to: 'dsfsdf@dsfsdf.com',
-            from: 'sdfsdf@fdsf.com',
-            subject: 'assunto xxx',
-            body: {
-                bodyType: 'text',
-                content: 'texto texto xxx'                    
-            }
+        //     }).catch((e)=>{
+                
+        //         console.log('message ejsSendMail test: ',e.message)
+        //         assert.equal(e.message,'hhhhhhhh')
+        //     })
+        // })
+
+        // let sendMailServiceStub
+
+        // const sendMailData = {
+        //     to: 'dsfsdf@dsfsdf.com',
+        //     from: 'sdfsdf@fdsf.com',
+        //     subject: 'assunto xxx',
+        //     body: {
+        //         bodyType: 'text',
+        //         content: 'texto texto xxx'                    
+        //     }
             
-        }
+        // }
 
-        const data = {
-            smtp:{
-                host: 'smtp.gmail.com',
-                user: 'aaaa',
-                password: '123',
-                secure: true
-            }  
-        }
+        // const data = {
+        //     smtp:{
+        //         host: 'smtp.gmail.com',
+        //         user: 'aaaa',
+        //         password: '123',
+        //         secure: true
+        //     }  
+        // }
 
-        before(()=>{
-            sendMailServiceStub = sinon.stub(sendMail,'send')
-        })
+        // before(()=>{
+        //     sendMailServiceStub = sinon.stub(sendMail,'send')
+        // })
 
-        beforeEach(()=>{
-            sendMailServiceStub.reset()
-        })
+        // beforeEach(()=>{
+        //     sendMailServiceStub.reset()
+        // })
 
-        after(()=>{
-            sendMailServiceStub.restore()
-        })
+        // after(()=>{
+        //     sendMailServiceStub.restore()
+        // })
             
-        it('sendMail.send should exec successfully',()=>{
+        // it('sendMail.send should exec successfully',()=>{
             
-            ejsSendMail(data).send(sendMailData)
+        //     ejsSendMail(data).send(sendMailData)
             
-            assert.equal(sendMailServiceStub.callCount, 1)
+        //     assert.equal(sendMailServiceStub.callCount, 1)
 
-        })
+        // })
 
-        it('Should get error when happens error in external sendMail.send e-mail service',()=>{
+        // it('Should get error when happens error in external sendMail.send e-mail service',async ()=>{
             
-            sendMailServiceStub.throws(new Error('Test123'))
-            
-            assert.throws(()=>ejsSendMail(data).send(sendMailData),'Send mail fail.Test123')
+        //     sendMailServiceStub.throws(new Error('Test123'))
 
-        })
+        //     try {
+        //         await ejsSendMail(data).send(sendMailData)
+        //     } catch (error) {
+        //         assert.equal(error.message, 'Send mail fail.Test123')
+        //     }
+
+        // })
 
     })
 

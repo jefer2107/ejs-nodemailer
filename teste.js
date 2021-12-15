@@ -18,16 +18,17 @@ ejsSendMail({
         content: `Testando`,
         images: [
             {
-                filename: 'imageTest 1',
-                buffer: 'buffer test 1'
-            },
-            {
                 filename: 'imageTest 2',
-                buffer: 'buffer test 2'
+                buffer: 'buffer 2'
             },
             {
                 filename: 'html 2',
-                filePath:'imagesTest/html5.png',
+                filePath:'images/test2.pdf',
+                cid: 'html'
+            },
+            {
+                filename: 'html 2',
+                filePath:'images/html5.png',
                 cid: 'html'
             }
         ]       

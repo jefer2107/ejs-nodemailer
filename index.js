@@ -1,17 +1,14 @@
 const sendMail = require("./emailService")
 const bodyContentImagesBuild = require("./imagesService/bodyContentImagesBuild")
 const ejsCompiler = require('./ejsCompiler')
-const erro = require('./errors')
+const validator = require('./validator')
 
 const ejsSendMail = (configData)=>{
-    if(!configData)throw Error('Config data not configured')
+    validator().configValidate(configData)
     
-    const send = async  (mailData)=>{
-        const newMailData = {
-            data: null
-        }
+    const send = async(mailData)=>{
         
-        erro(configData,mailData)
+        validator().maildataValidate(mailData)
 
         let bodyContent
 
@@ -46,7 +43,7 @@ const ejsSendMail = (configData)=>{
 
         const bodyType = mailData.body.bodyType
 
-        const data = {
+        const newMailData = {
             ...mailData,
             body: {
                 bodyType,
@@ -54,12 +51,10 @@ const ejsSendMail = (configData)=>{
             }
         }
 
-        newMailData.data = data
-
         try {
              sendMail.send({
                 configData,
-                mailData: newMailData.data
+                mailData: newMailData
             })
 
             
@@ -67,8 +62,6 @@ const ejsSendMail = (configData)=>{
             console.log('Erro index: ',e.message)
             throw Error(`Send mail fail.${e.message}`)
         }
-
-        return newMailData
 
         
     }

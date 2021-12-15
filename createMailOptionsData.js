@@ -1,10 +1,7 @@
+const validator = require('./validator')
 
 const createMailOptionsData = (mailData)=>{
-    
-    if(mailData == null || mailData == undefined) throw Error('maildata not informed.')
-    if(mailData.to == null || mailData.to == '') throw Error('to not informed.')
-    if(mailData.from == null || mailData.from == '') throw Error('from not informed.')
-    if(mailData.body.bodyType == null || mailData.body.bodyType == '') throw Error('bodyType not informed.')
+    validator().maildataValidate(mailData)
     
     let mailOptions = {}
 

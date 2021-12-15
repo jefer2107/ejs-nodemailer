@@ -1,9 +1,10 @@
 const nodemailer = require('nodemailer')
 const createMailOptionsData = require('./createMailOptionsData')
-const erro = require('./errors')
+const validator = require('./validator')
 
 const send = ({configData,mailData})=>{
-    erro(configData,mailData).emailFormat(mailData.to)
+    validator().configValidate(configData)
+    validator().maildataValidate(mailData)
 
         const {smtp} = configData
 

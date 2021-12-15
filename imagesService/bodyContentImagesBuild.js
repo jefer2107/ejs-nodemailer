@@ -1,12 +1,14 @@
 const bufferBuild = require('./bufferBuild')
+const validator = require('../validator')
 
 const bodyContentImagesBuild = async (images)=>{
-    if(!images || images == [])  throw Error('image data not informed.')
+    validator().imagesValidate(images)
 
     const newFileImages = []
 
     for(let x of images){
         if(x.buffer){
+            validator().imagesValidate(x.buffer)
 
             newFileImages.push({
                 filename: x.filename,
@@ -14,6 +16,8 @@ const bodyContentImagesBuild = async (images)=>{
             })
 
         }else{
+            validator().imagesValidate(x.filePath)
+            
             const fileItem = await bufferBuild(x.filePath).then((buffer)=>{
                  return {
                     filename: x.filename,
