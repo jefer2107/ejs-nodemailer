@@ -8,7 +8,6 @@ const bodyContentImagesBuild = async (images)=>{
 
     for(let x of images){
         if(x.buffer){
-            validator().imagesValidate(x.buffer)
 
             newFileImages.push({
                 filename: x.filename,
@@ -16,8 +15,6 @@ const bodyContentImagesBuild = async (images)=>{
             })
 
         }else{
-            validator().imagesValidate(x.filePath)
-            
             const fileItem = await bufferBuild(x.filePath).then((buffer)=>{
                  return {
                     filename: x.filename,

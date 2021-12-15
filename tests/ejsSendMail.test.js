@@ -169,17 +169,10 @@ describe('ejsSendMail Test',()=>{
 
             ejsSendMail(data).send(sendMailDataImages)
 
-            await bodyContentImagesBuild(sendMailDataImages.body.images)
+            const args = await bodyContentImagesBuildStub.args
 
-            //console.log('bodyContentImagesBuild: ',imagesResult)
+            console.log('args: ',args)
 
-            // const args = await sendMailServiceStub.args
-
-            // const mailData = args[0][0].mailData
-
-            // console.log('images: ',images)
-
-            // console.log('mailData: ',mailData)
 
         })
 

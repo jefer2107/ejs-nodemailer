@@ -10,23 +10,14 @@ const validator = ()=>{
     }
 
     const maildataValidate = (mailData)=>{
-        const characters = ['@','.','com']
-        let value = 0
-        let result = 1
         if(!mailData) throw Error('mailData wasn´n informed')
         if(!mailData.body.bodyType) throw Error('bodyType not informed.')
         if(!mailData.from ) throw Error('from should be set')
         if(!mailData.to ) throw Error('to should be set')
-        characters.map((e)=> {
-            let verifyCharacter = mailData.to.includes(e)
-    
-            if(verifyCharacter) value = 1
-            if(!verifyCharacter) value = 0
-            
-            result = result * value
-        })
 
-        if(result === 0) throw Error(`this email format does not exist`)
+        const characters = ['@','.','.com']
+        characters.map(e=> {if(mailData.to.includes(e)) throw Error(`this email format does not exist`)})
+
     }
 
     const imagesValidate = (images)=>{
@@ -34,26 +25,15 @@ const validator = ()=>{
 
         images.forEach((x)=>{
             if(x.buffer){
-                const sizeBuffer = x.buffer.toString().length
-
-                console.log('sizeBuffer: ',sizeBuffer)
-
-                if(sizeBuffer >= 2000000) throw Error('BUFFER The file image exceeds the allowed size.')
-                return false
+                if(x.buffer.toString().length >= 2000000) throw Error('BUFFER The file image exceeds the allowed size.')
 
             }else{
-                const typeFile = path.extname(x.filePath)
-                const stats = fs.statSync(x.filePath)
-                const sizeFilePath = stats['size']
-
-                console.log('sizeFilePath: ',sizeFilePath)
-                console.log('typeFile: ',typeFile)
                 
-                if(typeFile === '.pdf'){
-                    if(sizeFilePath >= 2000000) throw Error('PDF The file image exceeds the allowed size.')
+                if(path.extname(x.filePath) === '.pdf'){
+                    if(fs.statSync(x.filePath)['size'] >= 1000000) throw Error('The file image exceeds the allowed size.')
 
                 }else{
-                    if(sizeFilePath >= 2000000) throw Error('NÃO PDF The file image exceeds the allowed size.')
+                    if(fs.statSync(x.filePath)['size'] >= 2000000) throw Error('The file image exceeds the allowed size.')
 
                 }
             }

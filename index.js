@@ -24,11 +24,9 @@ const ejsSendMail = (configData)=>{
                 case 'ejs':
                     let ejs = null, bodyContentImages
 
-                    if(images)
-                        bodyContentImages = await bodyContentImagesBuild(images)
+                    if(images) bodyContentImages = await bodyContentImagesBuild(images)
 
-                    if(bodyType === 'ejs') 
-                        ejs = ejsCompiler(content,mailData.body?.ejsModel)
+                    if(bodyType === 'ejs') ejs = ejsCompiler(content,mailData.body?.ejsModel)
 
                     bodyContent = {
                         content: (bodyType === 'ejs' ? ejs : content),
