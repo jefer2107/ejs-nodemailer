@@ -26,12 +26,16 @@ const ejsSendMail = (configData)=>{
 
                     if(images) bodyContentImages = await bodyContentImagesBuild(images)
 
-                    if(bodyType === 'ejs') ejs = ejsCompiler(content,mailData.body?.ejsModel)
+                    if(bodyType === 'ejs') ejs = await ejsCompiler(content,mailData.body?.ejsModel)
+
+                    console.log('ejs index: ',ejs)
 
                     bodyContent = {
                         content: (bodyType === 'ejs' ? ejs : content),
                         images: bodyContentImages
                     }
+
+                    console.log('bodyContent index: ',bodyContent)
 
                     break
                 default:

@@ -3,6 +3,7 @@ const sendMail = require("../emailService")
 const ejsSendMail = require('../index')
 const sinon = require('sinon')
 const bodyContentImagesBuild = require("../imagesService/bodyContentImagesBuild")
+const ejsCompiler = require('../ejsCompiler')
 
 describe('ejsSendMail Test',()=>{
     describe('send',()=>{
@@ -101,7 +102,7 @@ describe('ejsSendMail Test',()=>{
             
         })
 
-        it('Bodycontent must be the same as content passed by mailData with bodyType html',async()=>{
+        it('Bodycontent must be the same as content passed by mailData with bodyType ejs',async()=>{
 
             const newSendMailDataEjs = {
                 ...sendMailData,
@@ -111,7 +112,13 @@ describe('ejsSendMail Test',()=>{
                 }
             }
 
+            let ejsCompilerStub;
+
+            ejsCompilerStub = sinon.stub(ejsCompiler)
+
             ejsSendMail(data).send(newSendMailDataEjs)
+
+            await ejsCompilerStub
 
             const args = sendMailServiceStub.args
 

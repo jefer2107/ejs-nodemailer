@@ -26,6 +26,7 @@ const bodyContentImagesBuild = async (images)=>{
                 fileImages=[]
                 throw Error(`Images can´t be set. ${erro}`)
             })
+            
             newFileImages.push(fileItem)
             
         }

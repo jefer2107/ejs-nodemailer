@@ -1,11 +1,16 @@
 const ejs = require('ejs')
 
 const ejsCompiler = (ejsContent, data)=>{
-    if(!ejsContent) throw Error('ejsTemplate not exists.')
+    return new Promise((res,rej)=>{
+        if(!ejsContent){
+            return rej('ejsTemplate not exists.')
+        } 
 
-    let template = ejs.compile(ejsContent)
-    const html = template(data)
-    return html  
+        let template = ejs.compile(ejsContent)
+        const html = template(data)
+        return res(html)  
+    })
+    
 }
 
 
