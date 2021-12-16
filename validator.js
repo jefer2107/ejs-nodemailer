@@ -10,13 +10,16 @@ const validator = ()=>{
     }
 
     const maildataValidate = (mailData)=>{
+        const characters = ['@','.','.com']
         if(!mailData) throw Error('mailData wasn´n informed')
         if(!mailData.body.bodyType) throw Error('bodyType not informed.')
         if(!mailData.from ) throw Error('from should be set')
-        if(!mailData.to ) throw Error('to should be set')
+        characters.map(e=> {if(!mailData.from.includes(e)) 
+            throw Error(`this email format: ${mailData.from} does not exist`)})
 
-        const characters = ['@','.','.com']
-        characters.map(e=> {if(mailData.to.includes(e)) throw Error(`this email format does not exist`)})
+        if(!mailData.to ) throw Error('to should be set')
+        characters.map(e=> {if(!mailData.to.includes(e)) 
+            throw Error(`this email format: ${mailData.to} does not exist`)})
 
     }
 
@@ -25,21 +28,22 @@ const validator = ()=>{
 
         images.forEach((x)=>{
             if(x.buffer){
-                if(x.buffer.toString().length >= 2000000) throw Error('BUFFER The file image exceeds the allowed size.')
+                if(x.buffer.toString().length >= 2000000) 
+                    throw Error(`The file: ${x.buffer} exceeds the allowed size.`)
 
             }else{
                 
                 if(path.extname(x.filePath) === '.pdf'){
-                    if(fs.statSync(x.filePath)['size'] >= 1000000) throw Error('The file image exceeds the allowed size.')
+                    if(fs.statSync(x.filePath)['size'] >= 1000000)
+                        throw Error(`The file: ${x.filePath} exceeds the allowed size.`)
 
                 }else{
-                    if(fs.statSync(x.filePath)['size'] >= 2000000) throw Error('The file image exceeds the allowed size.')
+                    if(fs.statSync(x.filePath)['size'] >= 2000000) 
+                    throw Error(`The file: ${x.filePath} exceeds the allowed size.`)
 
                 }
             }
         })
-
-        console.log('images: ',images)
 
     }
 

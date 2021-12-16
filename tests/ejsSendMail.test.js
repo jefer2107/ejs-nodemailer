@@ -9,12 +9,13 @@ describe('ejsSendMail Test',()=>{
         it('configData and mailData should be pass correctly',()=>{
             const configData = {
                 smtp:{
-                    host: 'smtp.gmail.com',
+                    host: 'vfgthynju',
                     user: 'aaaa',
                     password: '123',
                     secure: true
                 }  
             }
+
             const sendMailData = {
                 to: 'smtp.gmail.com',
                 from: 'sdfsdf@fdsf.com',
@@ -34,7 +35,16 @@ describe('ejsSendMail Test',()=>{
             assert.isTrue(sendMailData.to != null || sendMailData.to !== undefined)
         })
 
-        let sendMailServiceStub;
+            let sendMailServiceStub;
+
+            const data = {
+                smtp:{
+                    host: 'vfgthynju',
+                    user: 'aaaa',
+                    password: '123',
+                    secure: true
+                }  
+            }
 
             const sendMailData = {
                 to: 'dsfsdf@dsfsdf.com',
@@ -45,15 +55,6 @@ describe('ejsSendMail Test',()=>{
                     content: 'texto texto xxx'                    
                 }
                 
-            }
-
-            const data = {
-                smtp:{
-                    host: 'smtp.gmail.com',
-                    user: 'aaaa',
-                    password: '123',
-                    secure: true
-                }  
             }
 
             before(()=>{
@@ -73,6 +74,8 @@ describe('ejsSendMail Test',()=>{
             ejsSendMail(data).send(sendMailData)
 
             const args = sendMailServiceStub.args
+
+            console.log('args: ',args)
 
             const mailData = args[0][0].mailData
 
@@ -121,177 +124,152 @@ describe('ejsSendMail Test',()=>{
             
         })
 
-            //let bodyContentImagesBuildStub;
+        //     let bodyContentImagesBuildStub;
+
+        //     const sendMailDataImages = {
+        //         ...sendMailData,
+        //         body:{
+        //             bodyType: 'ejs',
+        //             content: 'ejs ejs xxx',
+        //             images: [
+        //                 {
+        //                     filename: 'imageTest 1',
+        //                     buffer: 'buffer test 1'
+        //                 },
+        //                 {
+        //                     filename: 'imageTest 2',
+        //                     buffer: 'buffer test 2'
+        //                 },
+        //                 {
+        //                     filename: 'html 2',
+        //                     filePath:'images/html5.png',
+        //                     cid: 'html'
+        //                 }
+        //             ]      
+        //         }
+        //     }
+
+        //     before(()=> {
+        //         bodyContentImagesBuildStub = sinon.stub(bodyContentImagesBuild)
+        //     });
+
+        //     beforeEach(()=>{
+        //         bodyContentImagesBuildStub.reset()
+        //     })
+
+        //     after(()=>{
+        //         bodyContentImagesBuildStub.restore()
+        //     })
+
+        // it('Bodycontent should be return correctly with bodyType ejs or html with images',async()=>{
+
+        //     let imagesResult
+            
+        //     ejsSendMail(data).send(sendMailDataImages)
+
+        //     const args = await bodyContentImagesBuildStub.arg
+
+        //     console.log('args: ',args)
 
 
-            // before(()=>{
-            //     bodyContentImagesBuildStub = sinon.stub(bodyContentImagesBuild,'bodyContentImagesBuild')
-            // })
+        // })
 
-            // beforeEach(()=>{
-            //     bodyContentImagesBuildStub.reset()
-            // })
+        it('should be return error if pass value empty in smtp config',async()=>{
 
-            // after(()=>{
-            //     bodyContentImagesBuildStub.restore()
-            // })
+            try {
+                await ejsSendMail()
 
-            const sendMailDataImages = {
-                ...sendMailData,
-                body:{
-                    bodyType: 'ejs',
-                    content: 'ejs ejs xxx',
-                    images: [
-                        {
-                            filename: 'imageTest 1',
-                            buffer: 'buffer test 1'
-                        },
-                        {
-                            filename: 'imageTest 2',
-                            buffer: 'buffer test 2'
-                        },
-                        {
-                            filename: 'html 2',
-                            filePath:'images/html5.png',
-                            cid: 'html'
-                        }
-                    ]      
-                }
+            } catch (e) {
+                assert.equal(e.message, 'SMTP config not configured. Please, configure calling config funtion.')
+            }
+            
+        })
+
+        it('should be return error if pass value empty in mail mailData',async()=>{
+            const configData = {
+                smtp:{
+                    host: 'frtgyhujki',
+                    user: 'aaaa',
+                    password: '123',
+                    secure: true
+                }  
             }
 
-        it('Bodycontent should be return correctly with bodyType ejs or html with images',async()=>{
+            try {
+                await ejsSendMail(configData).send()
 
-            let bodyContentImagesBuildStub;
+            } catch (e) {
+                assert.equal(e.message,'mailData wasn´n informed')
 
-            let imagesResult
-
-            bodyContentImagesBuildStub = sinon.stub(bodyContentImagesBuild)
-
-            ejsSendMail(data).send(sendMailDataImages)
-
-            const args = await bodyContentImagesBuildStub.args
-
-            console.log('args: ',args)
-
+            }
 
         })
 
+        it('should be return error if pass value empty of the mailData.from',async()=>{
 
-        // it('should be return error if pass value empty in smtp config',()=>{
+            const newSendMailDataNotFrom = {
+                ...sendMailData,
+                from: '',
+            }
 
-        //     try {
-        //         ejsSendMail()
-        //     } catch (e) {
-        //         assert.equal(e.message, 'SMTP config not configured. Please, configure calling config funtion.')
-        //     }
+            try {
+                await ejsSendMail(data).send(newSendMailDataNotFrom)
+
+            } catch (e) {
+                assert.equal(e.message,'from should be set')
+            }
+        })
+
+        it('should be return error if pass email format incorrectly of the mailData.from',async()=>{
+
+            const newSendMailDataEmailFormatFrom = {
+                ...sendMailData,
+                from: 'vvvvvvvvvvv',
+            }
+
+            try {
+                await ejsSendMail(data).send(newSendMailDataEmailFormatFrom)
+
+            } catch (e) {
+                assert.equal(e.message,`this email format: ${newSendMailDataEmailFormatFrom.from} does not exist`)
+            }
+        })
+
+        it('should be return error if pass email format incorrectly of the mailData.from',async()=>{
+
+            const newSendMailDataEmailFormatTo = {
+                ...sendMailData,
+                to: 'ggggggggggggg',
+            }
+
+            try {
+                await ejsSendMail(data).send(newSendMailDataEmailFormatTo)
+
+            } catch (e) {
+                assert.equal(e.message,`this email format: ${newSendMailDataEmailFormatTo.to} does not exist`)
+            }
+        })
+
+        it('Should get error when happens error in external sendMail.send e-mail service',async ()=>{
             
-        // })
+            sendMailServiceStub.throws(new Error('Test123'))
 
-        // it('should be return error if pass value empty in mail mailData',async()=>{
-        //     const configData = {
-        //         smtp:{
-        //             host: 'smtp.gmail.com',
-        //             user: 'aaaa',
-        //             password: '123',
-        //             secure: true
-        //         }  
-        //     }
-
-        //     ejsSendMail(configData).send().then((x)=>{
-        //         return x
-
-        //     }).catch((e)=>{
-        //         console.log('message ejsSendMail test: ',e.message)
-        //         assert.equal(e.message,'hhhhhhhh')
-        //     })
-
-        // })
-
-        // it('should be return error if pass value empty of the mailData.from',async()=>{
-
-        //     const configData = {
-        //         smtp:{
-        //             host: 'smtp.gmail.com',
-        //             user: 'aaaa',
-        //             password: '123',
-        //             secure: true
-        //         }  
-        //     }
-
-        //     const sendMailData = {
-        //         to: 'dsfsdf@dsfsdf.com',
-        //         from: 'dddddddddddddd',
-        //         subject: 'assunto xxx',
-        //         body: {
-        //             bodyType: 'text',
-        //             content: 'texto texto xxx'                    
-        //         }
+            try {
+                await ejsSendMail(data).send(sendMailData)
                 
-        //     }
+            } catch (error) {
+                assert.equal(error.message, 'Send mail fail.Test123')
+            }
 
-        //     ejsSendMail(configData).send(sendMailData).then((x)=>{
-        //         return x
-
-        //     }).catch((e)=>{
-                
-        //         console.log('message ejsSendMail test: ',e.message)
-        //         assert.equal(e.message,'hhhhhhhh')
-        //     })
-        // })
-
-        // let sendMailServiceStub
-
-        // const sendMailData = {
-        //     to: 'dsfsdf@dsfsdf.com',
-        //     from: 'sdfsdf@fdsf.com',
-        //     subject: 'assunto xxx',
-        //     body: {
-        //         bodyType: 'text',
-        //         content: 'texto texto xxx'                    
-        //     }
+        })
             
-        // }
-
-        // const data = {
-        //     smtp:{
-        //         host: 'smtp.gmail.com',
-        //         user: 'aaaa',
-        //         password: '123',
-        //         secure: true
-        //     }  
-        // }
-
-        // before(()=>{
-        //     sendMailServiceStub = sinon.stub(sendMail,'send')
-        // })
-
-        // beforeEach(()=>{
-        //     sendMailServiceStub.reset()
-        // })
-
-        // after(()=>{
-        //     sendMailServiceStub.restore()
-        // })
+        it('sendMail.send should be exec only once',()=>{
             
-        // it('sendMail.send should exec successfully',()=>{
+            ejsSendMail(data).send(sendMailData)
             
-        //     ejsSendMail(data).send(sendMailData)
-            
-        //     assert.equal(sendMailServiceStub.callCount, 1)
+            assert.equal(sendMailServiceStub.callCount, 1)
 
-        // })
-
-        // it('Should get error when happens error in external sendMail.send e-mail service',async ()=>{
-            
-        //     sendMailServiceStub.throws(new Error('Test123'))
-
-        //     try {
-        //         await ejsSendMail(data).send(sendMailData)
-        //     } catch (error) {
-        //         assert.equal(error.message, 'Send mail fail.Test123')
-        //     }
-
-        // })
+        })
 
     })
 

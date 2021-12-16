@@ -22,7 +22,7 @@ ejsSendMail({
                 buffer: 'buffer 2'
             },
             {
-                filename: 'html 2',
+                filename: 'html-pdf 1',
                 filePath:'images/test2.pdf',
                 cid: 'html'
             },

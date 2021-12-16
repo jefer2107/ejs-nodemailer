@@ -19,15 +19,9 @@ const send = ({configData,mailData})=>{
         })
 
         transporter.sendMail(createMailOptionsData(mailData),(error)=>{
-            if(error)
-            {
-                throw Error(error.message)
-                
-            }
-            else
-            {
-                console.log('Email sucessfully')
-            }
+            if(error) throw Error(error.message)
+            
+            console.log('Email sucessfully')
         })
 
         return transporter

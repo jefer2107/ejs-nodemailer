@@ -57,8 +57,8 @@ const ejsSendMail = (configData)=>{
 
             
         } catch (e) {
-            console.log('Erro index: ',e.message)
             throw Error(`Send mail fail.${e.message}`)
+            
         }
 
         
