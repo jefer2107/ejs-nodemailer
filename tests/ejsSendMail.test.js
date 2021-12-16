@@ -75,8 +75,6 @@ describe('ejsSendMail Test',()=>{
 
             const args = sendMailServiceStub.args
 
-            console.log('args: ',args)
-
             const mailData = args[0][0].mailData
 
             assert.equal(sendMailData.body.content,mailData.body.bodyContent)
